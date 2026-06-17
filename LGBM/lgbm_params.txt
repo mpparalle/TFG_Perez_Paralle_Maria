@@ -1,0 +1,25 @@
+[Global_Params]
+model_name = LGBM
+
+[Preprocess]
+train_split_file = CCLE_split_0_train.txt
+val_split_file = CCLE_split_0_val.txt
+test_split_file = CCLE_split_0_test.txt
+data_format = .parquet
+y_data_files = [["response.tsv"]]
+x_data_canc_files = [["cancer_gene_expression.tsv", ["Gene_Symbol"]]]
+x_data_drug_files = [["drug_mordred.tsv"]]
+use_lincs = true
+scaling = std
+
+[Train]
+data_format = .parquet
+model_file_name = model
+model_file_format = .txt
+learning_rate = 0.05
+n_estimators = 800
+
+[Infer]
+data_format = .parquet
+model_file_name = model
+model_file_format = .txt

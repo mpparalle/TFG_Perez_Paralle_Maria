@@ -1,0 +1,40 @@
+# Entornos virtuales
+venv/
+.venv/
+env/
+**/venv/
+**/env/
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+**/__pycache__/
+
+# Archivos de datos pesados (datasets y resultados generados)
+*.parquet
+*.csv
+*.gz
+*.pdf
+*.png
+**/exp_result/
+**/processed_data/
+**/csa_data/
+**/synergy_data_*/
+
+# Excepciones para permitir archivos de configuración necesarios
+!requirements.txt
+!model_params_def.py
+!lgbmsynergy_params.txt
+!lgbm_params.txt
+!xgboostsynergy_params.ini
+!deepdds_params.ini
+!README.md
+!README_PyPi.md
+
+# Configuraciones de editores e IDEs
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
