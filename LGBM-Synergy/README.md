@@ -36,6 +36,9 @@ cd LGBM-Synergy
 git checkout develop
 ```
 
+---
+
+## Option 1: Using Local Conda Environment
 
 ### 2. Set computational environment
 Create conda env using `yml`
@@ -43,9 +46,7 @@ Create conda env using `yml`
 conda env create -f lgbm_environment.yml
 ```
 
-
-
-### 4. Preprocess benchmark data to construct model input data 
+### 3. Preprocess benchmark data to construct model input data 
 ```bash
 python lgbmsynergy_preprocess_improve.py --input_dir ./synergy_data_v0.2.0 --output_dir exp_result
 ```
@@ -56,9 +57,7 @@ Generates:
 * three model input data files: `train_data.parquet`, `val_data.parquet`, `test_data.parquet`
 * three tabular data files, each containing the synergy values and corresponding metadata: `train_y_data.csv`, `val_y_data.csv`, `test_y_data.csv`
 
-
-
-### 5. Train LightGBM model
+### 4. Train LightGBM model
 ```bash
 python lgbmsynergy_train_improve.py --input_dir exp_result --output_dir exp_result
 ```
@@ -70,8 +69,7 @@ Generates:
 * predictions on val data (tabular data): `val_y_data_predicted.csv`
 * prediction performance scores on val data: `val_scores.json`
 
-
-### 6. Run inference on test data with the trained LightGBM model
+### 5. Run inference on test data with the trained LightGBM model
 ```bash
 python lgbmsynergy_infer_improve.py --input_data_dir exp_result --input_model_dir exp_result --output_dir exp_result --calc_infer_score true
 ```
@@ -81,3 +79,43 @@ Evaluates the performance on a test dataset with the trained model.
 Generates:
 * predictions on test data (tabular data): `test_y_data_predicted.csv`
 * prediction performance scores on test data: `test_scores.json`
+
+---
+
+## Option 2: Using Docker (Windows PowerShell)
+
+### 2. Build the Docker Image
+Build the Docker image using the provided [Dockerfile](file:///c:/Users/mppar/TFG_Perez_Paralle_Maria/LGBM-Synergy/Dockerfile):
+```powershell
+docker build -t lgbm-synergy .
+```
+
+### 3. Preprocess benchmark data to construct model input data
+Run the preprocessing script by mounting the local library, dataset, and workspace directories:
+```powershell
+docker run --rm `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\LGBM-Synergy:/usr/src/app" `
+  lgbm-synergy python lgbmsynergy_preprocess_improve.py --input_dir /usr/src/synergy_data_v0.2.0 --output_dir exp_result
+```
+
+### 4. Train LightGBM model
+Train the model using the preprocessed data inside the Docker container:
+```powershell
+docker run --rm `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\LGBM-Synergy:/usr/src/app" `
+  lgbm-synergy python lgbmsynergy_train_improve.py --input_dir exp_result --output_dir exp_result
+```
+
+### 5. Run inference on test data with the trained LightGBM model
+Evaluate the performance on a test dataset using the trained model inside Docker:
+```powershell
+docker run --rm `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\LGBM-Synergy:/usr/src/app" `
+  lgbm-synergy python lgbmsynergy_infer_improve.py --input_data_dir exp_result --input_model_dir exp_result --output_dir exp_result --calc_infer_score true
+```

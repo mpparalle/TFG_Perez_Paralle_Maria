@@ -29,6 +29,9 @@ cd DeepDDs
 git checkout develop
 ```
 
+---
+
+## Option 1: Using Local Conda Environment
 
 ### 2. Set computational environment
 ```bash
@@ -36,9 +39,7 @@ conda create -n deepdds python pytorch-gpu scikit-learn pandas pytorch_geometric
 conda activate deepdds
 ```
 
-
-
-### 4. Preprocess benchmark data to construct model input data 
+### 3. Preprocess benchmark data to construct model input data 
 ```bash
 python deepdds_preprocess_improve.py --input_dir ./synergy_data_v0.2.0 --output_dir exp_result
 ```
@@ -49,9 +50,7 @@ Generates:
 * three model input data files
 * three tabular data files, each containing the synergy values and corresponding metadata: `train_y_data.csv`, `val_y_data.csv`, `test_y_data.csv`
 
-
-
-### 5. Train model
+### 4. Train model
 ```bash
 python deepdds_train_improve.py --input_dir exp_result --output_dir exp_result
 ```
@@ -63,8 +62,7 @@ Generates:
 * predictions on val data (tabular data): `val_y_data_predicted.csv`
 * prediction performance scores on val data: `val_scores.json`
 
-
-### 6. Run inference on test data with the trained model
+### 5. Run inference on test data with the trained model
 ```bash
 python deepdds_infer_improve.py --input_data_dir exp_result --input_model_dir exp_result --output_dir exp_result --calc_infer_score true
 ```
@@ -74,6 +72,46 @@ Evaluates the performance on a test dataset with the trained model.
 Generates:
 * predictions on test data (tabular data): `test_y_data_predicted.csv`
 * prediction performance scores on test data: `test_scores.json`
+
+---
+
+## Option 2: Using Docker (Windows PowerShell)
+
+### 2. Build the Docker Image
+Build the Docker image using the provided [Dockerfile](file:///c:/Users/mppar/TFG_Perez_Paralle_Maria/DeepDDS/Dockerfile):
+```powershell
+docker build -t deepdds .
+```
+
+### 3. Preprocess benchmark data to construct model input data
+Run the preprocessing script by mounting the local library, dataset, and workspace directories:
+```powershell
+docker run --rm `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS:/usr/src/app" `
+  deepdds python deepdds_preprocess_improve.py --input_dir /usr/src/synergy_data_v0.2.0 --output_dir exp_result
+```
+
+### 4. Train DeepDDS model
+Train the model using the preprocessed data inside the Docker container:
+```powershell
+docker run --rm `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS:/usr/src/app" `
+  deepdds python deepdds_train_improve.py --input_dir exp_result --output_dir exp_result
+```
+
+### 5. Run inference on test data with the trained DeepDDS model
+Evaluate the performance on a test dataset using the trained model inside Docker:
+```powershell
+docker run --rm `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS:/usr/src/app" `
+  deepdds python deepdds_infer_improve.py --input_data_dir exp_result --input_model_dir exp_result --output_dir exp_result --calc_infer_score true
+```
 
 ## References
 

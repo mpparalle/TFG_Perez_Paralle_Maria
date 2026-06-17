@@ -16,7 +16,7 @@ Dependencias de IMPROVE:
 + [IMPROVE](https://github.com/JDACS4C-IMPROVE/IMPROVE)
 
 ## Dataset
-Los datos de referencia (benchmark) para Synergy se pueden descargar de este [sitio](https://web.cels.anl.gov/projects/IMPROVE_FTP/candle/public/improve/benchmarks/synergy_data_v0.2.0). En este experimento, se utiliza específicamente la partición **Split 0 del dataset de O'Neil** (`ONEIL_split_0`), el cual viene preconfigurado en el archivo [xgboostsynergy_params.ini](file:///C:/Users/mppar/Antigravity%20TFG/XGBoost-Synergy/xgboostsynergy_params.ini).
+Los datos de referencia (benchmark) para Synergy se pueden descargar de este [sitio](https://web.cels.anl.gov/projects/IMPROVE_FTP/candle/public/improve/benchmarks/synergy_data_v0.2.0). En este experimento, se utiliza específicamente la partición **Split 0 del dataset de O'Neil** (`ONEIL_split_0`), el cual viene preconfigurado en el archivo [xgboostsynergy_params.ini](file:///C:/Users/mppar/TFG_Perez_Paralle_Maria/XGBoost-Synergy/xgboostsynergy_params.ini).
 
 
 
@@ -30,7 +30,7 @@ git checkout develop
 ```
 
 ### 2. Configurar el entorno computacional (Construir la imagen de Docker)
-Construya la imagen de Docker utilizando el [Dockerfile](file:///C:/Users/mppar/Antigravity%20TFG/XGBoost-Synergy/Dockerfile) provisto:
+Construya la imagen de Docker utilizando el [Dockerfile](file:///C:/Users/mppar/TFG_Perez_Paralle_Maria/XGBoost-Synergy/Dockerfile) provisto:
 ```powershell
 docker build -t xgboost-synergy .
 ```
@@ -39,13 +39,13 @@ docker build -t xgboost-synergy .
 Ejecute el script de preprocesamiento montando las carpetas locales de la librería, el dataset y el espacio de trabajo actual:
 ```powershell
 docker run --rm `
-  -v "C:\Users\mppar\Antigravity TFG\IMPROVE_repo:/usr/src/IMPROVE_repo" `
-  -v "C:\Users\mppar\Antigravity TFG\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
-  -v "C:\Users\mppar\Antigravity TFG\XGBoost-Synergy:/usr/src/app" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\XGBoost-Synergy:/usr/src/app" `
   xgboost-synergy python xgboostsynergy_preprocess_improve.py --input_dir /usr/src/synergy_data_v0.2.0 --output_dir exp_result
 ```
 
-Preprocesa los datos para la partición configurada en [xgboostsynergy_params.ini](file:///C:/Users/mppar/Antigravity%20TFG/XGBoost-Synergy/xgboostsynergy_params.ini) (por defecto, **Split 0 de O'Neil**: `ONEIL_split_0_train.txt`, `ONEIL_split_0_val.txt`, `ONEIL_split_0_test.txt`) y crea los conjuntos de datos de entrenamiento (train), validación (val) y prueba (test).
+Preprocesa los datos para la partición configurada en [xgboostsynergy_params.ini](file:///C:/Users/mppar/TFG_Perez_Paralle_Maria/XGBoost-Synergy/xgboostsynergy_params.ini) (por defecto, **Split 0 de O'Neil**: `ONEIL_split_0_train.txt`, `ONEIL_split_0_val.txt`, `ONEIL_split_0_test.txt`) y crea los conjuntos de datos de entrenamiento (train), validación (val) y prueba (test).
 
 Genera:
 * Tres archivos de datos de entrada para el modelo (`train_data.parquet`, `val_data.parquet`, `test_data.parquet`)
@@ -55,9 +55,9 @@ Genera:
 Entrene el modelo utilizando los datos preprocesados dentro del contenedor Docker:
 ```powershell
 docker run --rm `
-  -v "C:\Users\mppar\Antigravity TFG\IMPROVE_repo:/usr/src/IMPROVE_repo" `
-  -v "C:\Users\mppar\Antigravity TFG\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
-  -v "C:\Users\mppar\Antigravity TFG\XGBoost-Synergy:/usr/src/app" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\XGBoost-Synergy:/usr/src/app" `
   xgboost-synergy python xgboostsynergy_train_improve.py --input_dir exp_result --output_dir exp_result
 ```
 
@@ -72,9 +72,9 @@ Genera:
 Evalúe el rendimiento del modelo entrenado sobre el conjunto de datos de prueba:
 ```powershell
 docker run --rm `
-  -v "C:\Users\mppar\Antigravity TFG\IMPROVE_repo:/usr/src/IMPROVE_repo" `
-  -v "C:\Users\mppar\Antigravity TFG\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
-  -v "C:\Users\mppar\Antigravity TFG\XGBoost-Synergy:/usr/src/app" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\IMPROVE_repo:/usr/src/IMPROVE_repo" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\DeepDDS\synergy_data_v0.2.0:/usr/src/synergy_data_v0.2.0" `
+  -v "C:\Users\mppar\TFG_Perez_Paralle_Maria\XGBoost-Synergy:/usr/src/app" `
   xgboost-synergy python xgboostsynergy_infer_improve.py --input_data_dir exp_result --input_model_dir exp_result --output_dir exp_result --calc_infer_score true
 ```
 

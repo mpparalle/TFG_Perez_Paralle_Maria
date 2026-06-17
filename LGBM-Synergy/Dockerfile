@@ -13,6 +13,9 @@ RUN conda env create -f lgbm_environment.yml
 # Activamos el entorno lgbm inyectándolo en el PATH del contenedor
 ENV PATH /opt/conda/envs/lgbm/bin:$PATH
 
+# Inyectamos el directorio de IMPROVE_repo en el PYTHONPATH
+ENV PYTHONPATH /usr/src/IMPROVE_repo
+
 # Copiamos todo el código del repositorio al contenedor
 COPY . .
 
