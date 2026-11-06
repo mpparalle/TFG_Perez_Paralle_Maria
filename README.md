@@ -1,4 +1,4 @@
-# TFG: Predicción de Sinergia de Drogas (Framework IMPROVE)
+# TFG: Predicción de Sinergia de Fármacos (Framework IMPROVE)
 
 Este repositorio contiene el espacio de trabajo para el Trabajo de Fin de Grado (TFG) de **María Pérez Parallé**, centrado en la implementación y comparación de modelos de Predicción de Respuesta a Drogas (DRP) y sinergia de medicamentos bajo el framework estandarizado **IMPROVE**.
 
